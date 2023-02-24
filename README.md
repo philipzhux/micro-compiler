@@ -4,7 +4,7 @@ First course project for CSC4180: Compiler Constuction @ CUHK.
 
 ## How do I design the Scanner?
 
-The scanner is designed to recognized the tokens as per the definition of MICRO language expressed in RegEx form. Special cases include `INTLITERAL` and `ID` token, whose token texts are meaningful. Here instead of passing a string or a integer to yylval, I created an ad-hoc `SyntaxTreeNode` object (a self-defined class further discussed in parser and code-gen part) initialized with the string or integer and pass the pointer of the `SyntaxTreeNode` to yyval.
+The scanner is designed to recognized the tokens as per the definitions of MICRO language expressed in RegEx. Special cases include `INTLITERAL` and `ID` token, whose token texts are meaningful. Here instead of passing a string or a integer to yylval, I created an ad-hoc `SyntaxTreeNode` object (a self-defined class further discussed in parser and code-gen part) initialized with the string or integer and pass the pointer of the `SyntaxTreeNode` to yyval.
 
 For example:
 
@@ -19,7 +19,7 @@ yylval.nodePtr = new MicroCompiler::SyntaxTreeNode(MicroCompiler::INTLITERAL,ato
 
 ## How do I design the Parser?
 
-The implementation of parser is bascially translating the extended CFG of Micro Language:
+The implementation of parser is basically translating the extended CFG of Micro Language:
 ```js
 1. <program> → BEGIN <statement list> END
 2. <statement list> → <statement> {<statement>}
@@ -54,7 +54,7 @@ int_literal: _INTLITERAL | _MINUSOP _INTLITERAL;
 
 ## How the code is generated?
 
-My implementation highlights one concept I adopt: **everything is a SyntaxTreeNode**. For primary like ``ID`` and ``INTLITERAL``, the corresponding ``SyntaxTreeNode`` is already created by the scanner. For types like expression and operation, they would be a node with left children and right children, and the leaves of the syntax tree must be primaries.
+My implementation highlights one central concept I adopt: **everything is a SyntaxTreeNode**. For primary like ``ID`` and ``INTLITERAL``, the corresponding ``SyntaxTreeNode`` is already created by the scanner. For types like expression and operation, they would be a node with left children and right children, and the leaves of the syntax tree must be primaries.
 
 ```C++
 class SyntaxTreeNode
@@ -112,6 +112,13 @@ The core idea on `generateCode` depends on the type of the node (the code snippe
 
 Since every intermediate results may claim temporary symbols and occupy space in stack memory, I also implemented logic to free temporary symbols when they are no longer needed and put them into free pool open for reuse when new temp symbol is claimed. Therefore, even if the height of syntax tree is enormous, only a few temporary symbols may be used.
 
+## Code Structure
+
+* `namespace MicroCompiler`
+    * `class SymbolTable` *(symbol_table.cpp/hpp)*
+    * `class SyntaxTreeNode` *(syntax_tree.cpp/hpp)*
+    * `class Code` *(code.cpp/hpp)*, entry point for parser
+
 ## Possible Optimizations
 
-Only used aroud three registers are used and there are a lot of store the load back and forth from the memory and the register flying around because all intermediate results are returned as symbol references, which means they have to reside in memory. To optimize, I can decouple the symbol object with memory, in this way a symbol (permanent/temporary) can be either in a register or in memory depending on the availability. Most of the changes only resides in the implementation of the SymEntry type in my code (now SymEntry is an alias to `uint32_t` because it is strongly coupled with relative memory address), so incremental changes is possible without changing most of the code.
+Only around three registers are used and there are a lot of store the load back and forth from the memory and the register flying around because all intermediate results are returned as symbol references, which means they have to reside in memory. To optimize, I can decouple the symbol object with memory, in this way a symbol (permanent/temporary) can be either in a register or in memory depending on the availability. Most of the changes only resides in the implementation of the SymEntry type in my code (now SymEntry is an alias to `uint32_t` because it is strongly coupled with relative memory address), so incremental changes is possible without changing most of the code.
