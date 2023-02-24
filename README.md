@@ -1,4 +1,4 @@
-# Micro Compiler Constucted with Flex and Bison
+# Micro Compiler Constructed with Flex and Bison
 
 First course project for CSC4180: Compiler Constuction @ CUHK.
 
@@ -8,7 +8,7 @@ First course project for CSC4180: Compiler Constuction @ CUHK.
     * `class SymbolTable` *(symbol_table.cpp/hpp)*
     * `class SyntaxTreeNode` *(syntax_tree.cpp/hpp)*
     * `class Code` *(code.cpp/hpp)*, entry point for parser
-    
+
 
 ## How do I design the Scanner?
 
