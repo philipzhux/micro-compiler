@@ -2,6 +2,14 @@
 
 First course project for CSC4180: Compiler Constuction @ CUHK.
 
+## Code Structure
+
+* `namespace MicroCompiler`
+    * `class SymbolTable` *(symbol_table.cpp/hpp)*
+    * `class SyntaxTreeNode` *(syntax_tree.cpp/hpp)*
+    * `class Code` *(code.cpp/hpp)*, entry point for parser
+    
+
 ## How do I design the Scanner?
 
 The scanner is designed to recognized the tokens as per the definitions of MICRO language expressed in RegEx. Special cases include `INTLITERAL` and `ID` token, whose token texts are meaningful. Here instead of passing a string or a integer to yylval, I created an ad-hoc `SyntaxTreeNode` object (a self-defined class further discussed in parser and code-gen part) initialized with the string or integer and pass the pointer of the `SyntaxTreeNode` to yyval.
@@ -112,12 +120,7 @@ The core idea on `generateCode` depends on the type of the node (the code snippe
 
 Since every intermediate results may claim temporary symbols and occupy space in stack memory, I also implemented logic to free temporary symbols when they are no longer needed and put them into free pool open for reuse when new temp symbol is claimed. Therefore, even if the height of syntax tree is enormous, only a few temporary symbols may be used.
 
-## Code Structure
 
-* `namespace MicroCompiler`
-    * `class SymbolTable` *(symbol_table.cpp/hpp)*
-    * `class SyntaxTreeNode` *(syntax_tree.cpp/hpp)*
-    * `class Code` *(code.cpp/hpp)*, entry point for parser
 
 ## Possible Optimizations
 
