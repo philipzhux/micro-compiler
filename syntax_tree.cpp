@@ -11,20 +11,22 @@
 
 MicroCompiler::SyntaxTreeNode::SyntaxTreeNode(MicroCompiler::NodeType _nodeType) : nodeType(_nodeType) {}
 
-MicroCompiler::SyntaxTreeNode::SyntaxTreeNode(MicroCompiler::NodeType _nodeType, std::string stringVal) : nodeType(_nodeType) 
+MicroCompiler::SyntaxTreeNode::SyntaxTreeNode(MicroCompiler::NodeType _nodeType, std::string stringVal) : nodeType(_nodeType)
 {
-    switch(nodeType) {
-        case ID:
-            id = stringVal;
-            break;
-        case EXPR:
-            op = stringVal;
-            break;
-        default:
-            break;
+    switch (nodeType)
+    {
+    case ID:
+        id = stringVal;
+        break;
+    case EXPR:
+        op = stringVal;
+        break;
+    default:
+        break;
     }
 }
-MicroCompiler::SyntaxTreeNode::SyntaxTreeNode(MicroCompiler::NodeType _nodeType, int _intVal) : nodeType(_nodeType) {
+MicroCompiler::SyntaxTreeNode::SyntaxTreeNode(MicroCompiler::NodeType _nodeType, int _intVal) : nodeType(_nodeType)
+{
     intVal = _intVal;
 }
 
@@ -42,9 +44,9 @@ MicroCompiler::SymEntry MicroCompiler::SyntaxTreeNode::generateCode(MicroCompile
     }
     case ASSIGN:
     {
-        SymEntry leftSym = left->generateCode(code);
         SymEntry rightSym = right->generateCode(code);
-        code.sym2Sym(leftSym, rightSym);
+        SymEntry leftSym = left->generateCode(code);
+        code.sym2Sym(leftSym, rightSym); // code::sym2Sym(dest,src)
         if (code.symbolTable.isEntTemp(leftSym))
             code.symbolTable.freeTempSymbol(leftSym);
         if (code.symbolTable.isEntTemp(rightSym))
@@ -53,16 +55,18 @@ MicroCompiler::SymEntry MicroCompiler::SyntaxTreeNode::generateCode(MicroCompile
     }
     case EXPR:
     {
-        if(left==nullptr) {
-            assert(right!=nullptr);
+        if (left == nullptr)
+        {
+            assert(right != nullptr);
             return right->generateCode(code);
         }
-        if(right==nullptr) {
-            assert(left!=nullptr);
+        if (right == nullptr)
+        {
+            assert(left != nullptr);
             return left->generateCode(code);
         }
-        SymEntry leftSym = left->generateCode(code);
         SymEntry rightSym = right->generateCode(code);
+        SymEntry leftSym = left->generateCode(code);
         code.sym2Reg(leftSym, reg2);
         code.sym2Reg(rightSym, reg3);
         if (code.symbolTable.isEntTemp(leftSym))
@@ -75,7 +79,7 @@ MicroCompiler::SymEntry MicroCompiler::SyntaxTreeNode::generateCode(MicroCompile
         return temp;
     }
     case ID:
-        {
+    {
         if (code.symbolTable.isSymbolExist(id))
         {
             return code.symbolTable.getSymbol(id);
@@ -83,13 +87,10 @@ MicroCompiler::SymEntry MicroCompiler::SyntaxTreeNode::generateCode(MicroCompile
         SymEntry newSymbolIdx = code.symbolTable.declareSymbol(id);
         code.reg2Sym(Register("$zero"), newSymbolIdx);
         return newSymbolIdx;
-        }
+    }
 
     default:
         break;
     }
     return NORETURN;
 }
-
-
-
