@@ -19,12 +19,12 @@ std::vector<std::string> &MicroCompiler::Code::getAssembly()
 
 void MicroCompiler::Code::reg2Sym(MicroCompiler::Register reg, MicroCompiler::SymEntry symbolIdx)
 {
-    codeLines.push_back(::stringFormat("sw %s,%d($fp)", reg.c_str(), int(symbolIdx) * 4));
+    codeLines.push_back(::stringFormat("sw %s,%d($fp)", reg.c_str(), int(symbolIdx) * -4));
 }
 
 void MicroCompiler::Code::sym2Reg(MicroCompiler::SymEntry symbolIdx, MicroCompiler::Register reg)
 {
-    codeLines.push_back(::stringFormat("lw %s,%d($fp)", reg.c_str(), int(symbolIdx) * 4));
+    codeLines.push_back(::stringFormat("lw %s,%d($fp)", reg.c_str(), int(symbolIdx) * -4));
 }
 
 void MicroCompiler::Code::sym2Sym(MicroCompiler::SymEntry destSymIdx, MicroCompiler::SymEntry srcSymIdx)

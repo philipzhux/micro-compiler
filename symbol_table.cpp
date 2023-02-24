@@ -19,8 +19,8 @@ MicroCompiler::SymEntry MicroCompiler::SymbolTable::getSymbol(std::string symbol
 
 MicroCompiler::SymEntry MicroCompiler::SymbolTable::declareSymbol(std::string symbol)
 {
-    map[symbol] = currIdx++;
-    code->moveStack(4);
+    map[symbol] = ++currIdx;
+    code->moveStack(-4);
     return map[symbol];
 }
 
@@ -34,8 +34,8 @@ MicroCompiler::SymEntry MicroCompiler::SymbolTable::declareTempSymbol()
     SymEntry ret;
     if (freedTempSyms.empty())
     {
-        ret = currIdx++;
-        code->moveStack(4);
+        ret = ++currIdx;
+        code->moveStack(-4);
         tempSet.insert(ret);
     }
     else
