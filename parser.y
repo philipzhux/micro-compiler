@@ -20,6 +20,7 @@
 int yyerror(char *s); 
 extern "C" int yylex();
 extern "C" FILE* yyin;
+extern "C" int yylineno;
 extern "C" int yyparse();
 MicroCompiler::Code code;
 
@@ -82,7 +83,7 @@ assign_stat: id _ASSIGNOP expression _SEMICOLON
     MicroCompiler::SyntaxTreeNode* assignNode = new MicroCompiler::SyntaxTreeNode(MicroCompiler::ASSIGN);
     assignNode->left = $1;
     assignNode->right = $3;
-    assignNode->generateCode(code);
+    assert(assignNode->generateCode(code)==MicroCompiler::NORETURN);
 };
 read_stat: _READ _LPAREN id_list _RPAREN _SEMICOLON
 {
@@ -171,12 +172,20 @@ add_op: _PLUSOP
 
 %%
 /*Implement main function and the functions you want to use*/ 
-int yyerror (char *s) { printf ("Syntax Error on line %s\n", s); return 0;} 
+int yyerror (char *s) { 
+    printf ("%s: on Line %d\n", s,yylineno); 
+    
+    return -1;
+    } 
 
 int main(int argc , char const *argv []) {
-    yyparse();
-    for(auto& line: code.getAssembly()){
-        std::cout<<line<<std::endl;
+    if(!yyparse()) 
+    {
+        for(auto& line: code.getAssembly())
+        {
+            std::cout<<line<<std::endl;
+        }
     }
+
     return 0;
 }
