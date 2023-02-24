@@ -44,7 +44,7 @@ MicroCompiler::Code code;
 %token _SCANEOF
 
 %type <nodePtr> id expression expression_tail primary int_literal;
-%type <nodeVec> id_tail id_list expr_list expr_list_tail;
+%type <nodeVec> id_list_tail id_list expr_list expr_list_tail;
 %type <stringVal>  add_op;
 
 
@@ -106,12 +106,12 @@ int_literal: _INTLITERAL {}| _MINUSOP _INTLITERAL {
     $2->intVal*=-1;
     $$ = $2;
 };
-id_list: id id_tail
+id_list: id id_list_tail
 {
     $2->push_back($1);
     $$ = $2;
 };
-id_tail:  _COMMA id id_tail 
+id_list_tail:  _COMMA id id_list_tail 
 {
     $3->push_back($2);
     $$ = $3;
