@@ -114,14 +114,14 @@ The core idea on `generateCode` depends on the type of the node (the code snippe
     code.sym2Sym(leftSym, rightSym); // code::sym2Sym(dest,src)
     return MicroCompiler::NORETURN;
     ```
-* EXPR: Operation expression lile add op or minus op, also call `generateCode` on both right and left nodes, then add code to i.move content of result symbols from memory to register ii. conduct the operation (add/sub) iii. put result from register to a temporary symbol and return the symbol
+* EXPR: Operation expression like add op or minus op, also call `generateCode` on both right and left nodes, then add code to i.move content of result symbols from memory to register ii. conduct the operation (add/sub) iii. put result from register to a temporary symbol and return the symbol
 
-* ID: if ID key not in symbol table, create a new (permanent) symbol( generate code to: allocate mem for the symbol, initialize to zero), add (ID-key, symbolIndex) into the symbol table and return the symbol reference (index).
+* ID: if ID key not in symbol table, create a new (permanent) symbol (i.e. generate code to: allocate mem for the symbol, initialize to zero), add (ID-key, symbolIndex) into the symbol table and return the symbol reference (index).
 
-Since every intermediate results may claim temporary symbols and occupy space in stack memory, I also implemented logic to free temporary symbols when they are no longer needed and put them into free pool open for reuse when new temp symbol is claimed. Therefore, even if the height of syntax tree is enormous, only a few temporary symbols may be used.
+Since every intermediate results may claim temporary symbols and occupy space in stack memory, I also implemented logic to free temporary symbols when they are no longer needed and put them into free pool open for reuse by new temp symbols. Therefore, even if the height of syntax tree is enormous, only a few temporary symbols may be used.
 
 
 
 ## Possible Optimizations
 
-Only around three registers are used and there are a lot of store the load back and forth from the memory and the register flying around because all intermediate results are returned as symbol references, which means they have to reside in memory. To optimize, I can decouple the symbol object with memory, in this way a symbol (permanent/temporary) can be either in a register or in memory depending on the availability. Most of the changes only resides in the implementation of the SymEntry type in my code (now SymEntry is an alias to `uint32_t` because it is strongly coupled with relative memory address), so incremental changes is possible without changing most of the code.
+Only around three registers are used and there are a lot of stores and loads back and forth from the memory and the register flying around, because all intermediate results are returned as symbol references, which means they have to reside in memory. To optimize, I can decouple the symbol object with memory, in this way a symbol (permanent/temporary) can be either in a register or in memory depending on the availability. Most of the changes only resides in the implementation of the SymEntry type in my code (now SymEntry is an alias to `uint32_t` because it is strongly coupled with relative memory address), so incremental changes is possible without changing most of the code.
