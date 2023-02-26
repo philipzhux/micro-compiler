@@ -27,6 +27,7 @@ namespace MicroCompiler
         void sym2Sym(SymEntry, SymEntry);
         void sysRead(SymEntry);
         void sysWrite(SymEntry);
+        void sysPrintNewLine();
         void moveStack(int offset);
         std::vector<std::string>& getAssembly();
         void addAsmLine(std::string);

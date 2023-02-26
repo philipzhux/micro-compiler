@@ -96,6 +96,7 @@ write_stat: _WRITE _LPAREN expr_list _RPAREN _SEMICOLON {
     for(auto it = $3->rbegin();it!=$3->rend();it++) {
         MicroCompiler::SymEntry symbol = (*it)->generateCode(code);
         code.sysWrite(symbol);
+        code.sysPrintNewLine();
         }
 };
 id: _ID

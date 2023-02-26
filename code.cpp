@@ -62,3 +62,10 @@ void MicroCompiler::Code::sysWrite(MicroCompiler::SymEntry symbolIdx)
     sym2Reg(symbolIdx, Register("$a0"));
     addAsmLine("syscall");
 }
+
+void MicroCompiler::Code::sysPrintNewLine()
+{
+    addAsmLine("li $v0,11");
+    addAsmLine("li $a0,10");
+    addAsmLine("syscall");
+}
